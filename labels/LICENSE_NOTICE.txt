@@ -1,0 +1,7 @@
+ANNOTATION LICENSE NOTICE (PRE-PUBLICATION)
+
+These annotation files are created by the authors and are currently released only for academic review purposes.
+
+Redistribution, reuse, or derivative work based on the annotations is prohibited before the formal acceptance of the associated paper.
+
+After acceptance, the annotations will be released under the Creative Commons Attribution 4.0 International License (CC BY 4.0).
