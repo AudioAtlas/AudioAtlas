@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Audio Dataset Showcase</title>
+  <script src="https://unpkg.com/wavesurfer.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 40px; max-width: 800px; }
+    .audio-block { margin-bottom: 40px; border: 1px solid #ccc; padding: 20px; border-radius: 10px; }
+    .wave { margin: 10px 0; }
+    button { margin-right: 10px; }
+  </style>
+</head>
+<body>
+
+<h1>My Audio Dataset</h1>
+<p>This page introduces the dataset and demonstrates labeled audio segments with waveform visualization.</p>
+<img src="images/cover.jpg" width="100%" alt="Dataset Illustration"/>
+
+<!-- Audio Block 1 -->
+<div class="audio-block">
+  <h3>Example 1: Rain Sound</h3>
+  <div id="waveform1" class="wave"></div>
+  <button onclick="playSegment(wave1, 2, 5)">Play 2s–5s</button>
+  <button onclick="playSegment(wave1, 8, 10)">Play 8s–10s</button>
+</div>
+
+<!-- Audio Block 2 -->
+<div class="audio-block">
+  <h3>Example 2: Dog Barking</h3>
+  <div id="waveform2" class="wave"></div>
+  <button onclick="playSegment(wave2, 0, 2)">Play 0s–2s</button>
+</div>
+
+<script>
+  function initWaveform(containerId, file) {
+    const wave = WaveSurfer.create({
+      container: containerId,
+      waveColor: '#ccc',
+      progressColor: '#0c88e0',
+      height: 100,
+    });
+    wave.load(file);
+    return wave;
+  }
+
+  function playSegment(wave, start, end) {
+    wave.play(start, end);
+  }
+
+  // Load two audio examples
+  const wave1 = initWaveform('#waveform1', 'audios/example1.wav');
+  const wave2 = initWaveform('#waveform2', 'audios/example2.wav');
+</script>
+
+</body>
+</html>
