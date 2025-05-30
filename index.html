@@ -2,55 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Audio Dataset Showcase</title>
+  <title>WaveSurfer Demo</title>
   <script src="https://unpkg.com/wavesurfer.js"></script>
   <style>
-    body { font-family: sans-serif; margin: 40px; max-width: 800px; }
-    .audio-block { margin-bottom: 40px; border: 1px solid #ccc; padding: 20px; border-radius: 10px; }
-    .wave { margin: 10px 0; }
-    button { margin-right: 10px; }
+    .waveform { height: 100px; margin: 20px 0; }
   </style>
 </head>
 <body>
 
-<h1>My Audio Dataset</h1>
-<p>This page introduces the dataset and demonstrates labeled audio segments with waveform visualization.</p>
-<img src="images/cover.jpg" width="100%" alt="Dataset Illustration"/>
-
-<!-- Audio Block 1 -->
-<div class="audio-block">
-  <h3>Example 1: Rain Sound</h3>
-  <div id="waveform1" class="wave"></div>
-  <button onclick="playSegment(wave1, 2, 5)">Play 2s–5s</button>
-  <button onclick="playSegment(wave1, 8, 10)">Play 8s–10s</button>
-</div>
-
-<!-- Audio Block 2 -->
-<div class="audio-block">
-  <h3>Example 2: Dog Barking</h3>
-  <div id="waveform2" class="wave"></div>
-  <button onclick="playSegment(wave2, 0, 2)">Play 0s–2s</button>
-</div>
+<h2>Test Player for rain.wav</h2>
+<div id="waveform-Artlist_100349" class="waveform"></div>
+<button onclick="playSegment('Artlist_100349', 2, 5)">Play Event A (2–5s)</button>
+<button onclick="playSegment('Artlist_100349', 6, 8)">Play Event B (6–8s)</button>
 
 <script>
-  function initWaveform(containerId, file) {
-    const wave = WaveSurfer.create({
+  const waves = {};
+
+  function createWaveSurfer(containerId, audioFile) {
+    return WaveSurfer.create({
       container: containerId,
-      waveColor: '#ccc',
-      progressColor: '#0c88e0',
-      height: 100,
-    });
-    wave.load(file);
-    return wave;
+      waveColor: '#aaa',
+      progressColor: '#007bff',
+      height: 100
+    }).load(audioFile);
   }
 
-  function playSegment(wave, start, end) {
+  function playSegment(key, start, end) {
+    const wave = waves[key];
+    if (!wave) return;
     wave.play(start, end);
   }
 
-  // Load two audio examples
-  const wave1 = initWaveform('#waveform1', 'audios/example1.wav');
-  const wave2 = initWaveform('#waveform2', 'audios/example2.wav');
+  // 初始化播放器
+  waves['Artlist_100349'] = WaveSurfer.create({
+    container: '#waveform-Artlist_100349',
+    waveColor: '#aaa',
+    progressColor: '#007bff',
+    height: 100
+  });
+  waves['Artlist_100349'].load('audios/Artlist_100349.wav');
 </script>
 
 </body>

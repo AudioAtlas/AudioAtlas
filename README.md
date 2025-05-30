@@ -1,8 +1,19 @@
-## 📖 Annotation License and Availability
+# 🎧 AudioAtlas Benchmark Demo Page
 
-The annotation files in this repository (e.g., `labels/annotations_preview.json`) were created by the authors.
+This repository hosts a demo web page for AudioAtlas submission. It includes waveform-based audio previews, segmented playback, and visual illustrations.
 
-- During peer review, the annotations are made available for **review purposes only** and may not be reused or redistributed.
-- Upon acceptance of the associated paper, the full annotation dataset will be released under the **Creative Commons Attribution 4.0 International (CC BY 4.0)** license.
+## 📝 Annotation License (Pre-publication)
 
-The CC BY 4.0 license allows for reuse, redistribution, and adaptation, even commercially, as long as appropriate credit is given.
+The annotations provided in this repository (e.g., `annotations_preview.json`) are **for review purposes only**.
+
+- ❌ Redistribution or derivative use is not allowed before publication.
+- ✅ Upon acceptance of the related paper, the full annotations will be released under the [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) license.
+
+## 🌐 Website Preview
+
+Once uploaded and GitHub Pages is enabled, visit:
+
+```
+https://<your-username>.github.io/<your-repo-name>/
+```
+
