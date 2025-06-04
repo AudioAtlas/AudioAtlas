@@ -23,11 +23,11 @@ AudioAtlas, a comprehensive and balanced benchmark for movie-oriented text-to-au
 
 ├── metas/ # All annotations and SoundTrace jsonl
 
-├── index.html # Interactive demo
-
 ├── LICENSE # License info (conditional)
 
-└── README.md # This file
+├── README.md # This file
+
+└── index.html # Interactive demo
 
 ## 🔍 Preview
 
