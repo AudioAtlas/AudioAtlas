@@ -1,46 +1,1872 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+
   <meta charset="UTF-8">
-  <title>WaveSurfer Demo</title>
+  <title>AudioAtlas</title>
+  <link rel="icon" type="images/logo.png" href="images/logo.png">
   <script src="https://unpkg.com/wavesurfer.js"></script>
   <style>
-    .waveform { height: 100px; margin: 20px 0; }
-  </style>
+  body {
+  font-family: 'Noto Sans', sans-serif;
+  background-color: #fff;
+  color: #333;
+  margin: 0;
+  padding: 40px 20px;
+  line-height: 1.6;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+h2 {
+  margin: 0;
+  padding: 0;
+}
+  h1, h2, h3 {
+  font-family: 'Noto Sans', sans-serif;
+  text-align: center;
+  font-weight: 700; /* 加粗标题 */
+}
+
+  h1 {
+    font-size: 2.0em;
+    margin-bottom: 1.5em;
+  }
+
+
+
+
+  h2.section-title {
+  font-size: 1.8em;
+
+    border-bottom: none;
+    font-weight: bold;
+    text-align: center;
+  margin: 40px 0 0px 0;  /* 更紧凑 */
+}
+
+h2.abstract-title {
+font-size: 1.8em;
+
+    border-bottom: none;
+    font-weight: bold;
+    text-align: center;
+  margin: 40px 0 20px 0;  /* 摘要标题下方保留较大间距 */
+}
+
+
+  .section {
+    margin-top: 100px;
+  }
+.section p {
+  margin-top: 2px;
+  margin-bottom: 6px;
+}
+  .abstract {
+  font-size: 0.9em;
+  line-height: 1.5;
+  max-width: 700px;
+  margin: 0 auto 30px auto;
+  text-align: justify;
+  color: #333;
+}
+
+/* audio展示折叠时的样式 */
+summary {
+  position: relative;
+  padding: 12px 16px 12px 36px;
+  font-size: 1.0em;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  color: #222;
+
+  /* ✅ 这是关键部分：应用在 summary 本身 */
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+summary:hover {
+  background-color: #f3f3f3;
+  border-radius: 6px;
+  color: #007bff;
+}
+
+/* ✅ 箭头图标放在伪元素中控制 */
+summary::before {
+  content: "▶";
+  position: absolute;
+  left: 10px;
+  top: 12px;
+  font-size: 1.2em;
+  transition: transform 0.2s ease;
+}
+
+details[open] summary::before {
+  content: "▼";
+}
+
+
+/* audio展示折叠时的样式 */
+
+
+.audio-card-new {
+  background-color: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.audio-card-header {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.audio-card-summary {
+  font-size: 1.02em;
+  font-weight: 500;
+  margin: 6px 0 14px;
+  color: #555;
+}
+
+.waveform-container {
+  background-color: #f1f1f1;
+  border-radius: 6px;
+  height: 200px;
+  display: flex;
+  justify-content: center;    /* ✅ 水平居中 */
+  align-items: center; /* 让 canvas 在中间 */
+  padding: 0 10px;
+  margin-bottom: 16px;
+}
+
+.waveform {
+  width: 90%;
+}
+
+
+
+/* 事件按钮样式 */
+.event-buttons-new {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.event-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.event-item button {
+  background-color: #e6f0ff;
+  border: 1px solid #b3d1ff;
+  color: #003366;
+  padding: 6px 10px;
+  font-size: 0.9em;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.event-item span {
+  color: #444;
+  font-size: 0.92em;
+  flex: 1;
+}
+
+.selector-bar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px auto;
+}
+
+.selector-bar button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #e6e6e6;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.selector-bar button:hover {
+  background-color: #d4d4d4;
+}
+
+.audio-card-wrapper {
+  display: none;
+}
+
+.audio-card-wrapper.active-card {
+  display: block;
+}
+
+.play-btn {
+  background-color: #e6f0ff;
+  border: 1px solid #b3d1ff;
+  color: #003366;
+  padding: 5px 10px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 16px; /* 🔽 在按钮下方留出空间 */
+  transition: background-color 0.3s ease;
+}
+
+.play-btn:hover {
+  background-color: #0056b3;
+}
+
+.waveform-timeline {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #555;
+}
+
+ul.dataset-highlights {
+  list-style: none;
+  padding-left: 0;
+  font-size: 1em;
+  line-height: 1.8;
+}
+
+ul.dataset-highlights li {
+  margin-bottom: 10px;
+  padding-left: 1.2em;
+  position: relative;
+}
+
+ul.dataset-highlights li::before {
+  /* content: "✔️";/*
+  position: absolute;
+  left: 0;
+}
+
+.centered-img {
+  max-width: 20%;        /* 控制最大宽度，可按需设置为60%、100%等 */
+  height: auto;          /* 保持原始宽高比 */
+  display: block;        /* 让图片成为独立的块级元素 */
+  margin: 20px auto;     /* 自动居中，同时上下保留间距 */
+  border-radius: 8px;    /* 可选：圆角使页面更美观 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 可选：添加阴影层次 */
+}
+.centered-figure {
+  text-align: center;
+  margin: 16px auto;
+}
+
+.centered-img {
+  display: block;
+  margin: 0 auto;
+  max-width: 80%;
+  height: auto;
+}
+
+.img-caption {
+  font-size: 13px;      /* 字体略小 */
+  /*color: #666; */           /* 灰色更淡 */
+  margin-top: 6px;
+  font-weight: bold;
+}
+
+
+   .benchmark-table-container {
+    max-width: 720px;  /* 横向宽度缩小 */
+    margin: 16px auto;
+    font-size: 12px;
+    color: #222;
+    line-height: 1.3;
+  }
+
+  .benchmark-table-title {
+    text-align: center;
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 8px;
+    color: #444;
+  }
+
+  table.benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    table-layout: fixed; /* 保持列宽平均 */
+  }
+
+  table.benchmark-table th,
+  table.benchmark-table td {
+    padding: 3px 5px;         /* 横纵向 padding 更小 */
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    word-wrap: break-word;
+    font-size: 12px;
+  }
+
+  table.benchmark-table th {
+    font-weight: 600;
+    background-color: #f7f7f7;
+    color: #333;
+    font-size: 11.8px;
+  }
+
+  table.benchmark-table td:first-child {
+    text-align: left;
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+
+  table.benchmark-table td.cap {
+    font-family: monospace;
+    color: #555;
+    font-size: 12.8px;
+  }
+
+  table.benchmark-table tr.highlight-row {
+    background-color: #f3f3f3;
+  }
+
+  .subsection {
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+.subsection-title {
+  font-size: 1.2em;
+  font-weight: 600;
+  margin-bottom: 4px;
+
+}
+
+.sub-author {
+  font-size: 1.15em;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 2.7em;
+}
+
+a {
+  color: #4a90e2;            /* 稍深的淡蓝色 */
+  text-decoration: none;     /* 去除默认下划线 */
+  font-size: 0.95em;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #007bff;            /* 悬停时蓝色 */
+  text-decoration: underline;
+}
+
+table.stats-table {
+    font-size: 13px;
+    border-collapse: collapse;
+    margin: 7px auto;
+    margin-bottom: 2.7em;
+    width: 90%;
+    text-align: center;
+  }
+
+  table.stats-table th,
+  table.stats-table td {
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+  }
+
+  table.stats-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+
+  .section-subtitle {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 16px 0 6px;
+    text-align: center;
+  }
+
+.section-divider {
+  border: none;
+  border-top: 3px solid #888;
+  margin: 60px 0 30px;
+  margin-top:200px;
+  width: 100%;
+}
+
+.notice-line {
+  font-size: 13px;
+  color: #555;
+  margin-top: -10px;
+  margin-bottom: 5px;
+}
+.styled-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+  text-align: center;
+  margin: 1em 0;
+}
+
+.styled-table th,
+.styled-table td {
+  border: 1px solid #333;
+  padding: 6px 10px;
+}
+
+.styled-table th {
+  font-weight: bold;
+  background-color: #f9f9f9;
+}
+
+.styled-table thead tr:first-child th {
+  border-bottom: none;
+}
+
+.table-caption {
+  font-size: 14px;
+  margin-top: 6px;
+  text-align: center;
+}
+</style>
 </head>
 <body>
 
-<h2>Test Player for rain.wav</h2>
-<div id="waveform-Artlist_100349" class="waveform"></div>
-<button onclick="playSegment('Artlist_100349', 2, 5)">Play Event A (2–5s)</button>
-<button onclick="playSegment('Artlist_100349', 6, 8)">Play Event B (6–8s)</button>
+<div class="container">
+  <h1>
+    <img
+    src="images/logo.png"
+    alt="Logo"
+    style="
+      height: 50px;
+      vertical-align: middle;
+      margin-right: 15px;
+      margin-bottom: 8px;"
+  >AudioAtlas<br> A Comprehensive and Balanced Benchmark Towards Movie-Oriented Text-to-Auido Generation</h1>
+
+<p class="sub-author">Anonymous</p>
+
+<p class="notice-line">⚠️ Note: Please wait a moment for the audio to load before playback.</p>
+<div class="audio-card-new">
+  <div class="audio-card-header">Non-Electronic Tools;Seatbelt</div>
+  <div class="audio-card-summary">As the engine winds down during shutdown, the car unlocks, followed by the seatbelt buckle clicking open, the door opening, friction and clinking sounds from releasing the seatbelt, and finally a loud thud as the door shuts.</div>
+  <div class="waveform-container">
+    <div class="waveform" id="waveform-Artlist_100349"></div>
+  </div>
+  <div class="play-control">
+    <button class="play-btn" onclick="togglePlay('Artlist_100349')">▶</button>
+  </div>
+  <div class="event-buttons-new">
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_100349', 0.0, 2.3)">0.00s - 2.30s </button>
+      <span>The engine gradually dying out when the car stalls.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_100349', 2.3, 4.69)">2.30s - 4.69s </button>
+      <span>The sound of a car door unlocking.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_100349', 4.69, 5.4)">4.69s - 5.40s </button>
+      <span>The click of unbuckling the seatbelt latch.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_100349', 5.4, 6.04)">5.40s - 6.04s </button>
+      <span>The sound of opening a car door.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_100349', 6.04, 9.0)">6.04s - 9.00s </button>
+      <span>The friction sound of releasing the seatbelt and the clinking noise of the buckle hitting.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_100349', 9.0, 11.38)">9.00s - 11.38s </button>
+      <span>A thud as the car door closes.</span>
+    </div>
+  </div>
+</div>
+
+
+
+
+    <div class="abstract">
+      <h2 class="abstract-title">Abstract</h2>
+  <p>
+    Recent rapid progress in Text-to-Audio (T2A) models contrasts sharply with the stagnation observed in the evolution of corresponding evaluation benchmarks. Existing benchmarks, such as AudioCaps, suffer from limited diversity and quality, as well as biased category distributions, leading to increasingly questionable reliability in assessing advanced T2A models. We introduce AudioAtlas, a comprehensive and balanced evaluation benchmark specifically designed for evaluating T2A models aimed at movie production. Based on an object-centric audio category system, AudioAtlas provides high-quality reference samples characterized by categorical balance and diversity. It includes both detailed overall and event-level captions with rich descriptors, along with fine-grained temporal annotations provided by human experts, facilitating thorough evaluation of both temporal alignment and semantic accuracy. To enable precise evaluation of temporally-aligned generation across universal categories, two novel metrics are proposed through recent advancements in large-scale Audio Language Models (AudioLLMs) and contrastive learning models. By re-benchmarking six currently influential T2A models, AudioAtlas provides more aesthetics-aligned evaluations, offering clearer optimization directions for movie-production-oriented T2A systems. Additionally, we conduct a comprehensive comparative analysis on temporally-controllable T2A methods with training-based,  and promising training-free approaches inspired by region-controllable image generation, clarifying current limitations and pointing out directions for future research.
+  </p>
+</div>
+
+     <div class="section">
+  <h2 class="section-title">Overview of AudioAtlas</h2>
+  <p>
+    AudioAtlas, a comprehensive and balanced benchmark for movie-oriented text-to-audio generation.
+    AudioAtlas contains 1,165 high-quality and diverse recordings, comprising 276 categories across 16 themes.
+    Built upon a well-structured audio category system-SoundTrace, AudioAtlas provides a more category-balanced and comprehensive benchmark compared to the widely used AudioCaps test set.
+    Furthermore, we provide detailed human annotations covering both temporal and semantic dimensions.
+  </p>
+<ul class="dataset-highlights">
+    <li>🧩 <strong>Rich Diversity:</strong> Based on our proposed <em>SoundTrace</em>, an object-centric audio taxonomy, AudioAtlas comprises <em>276</em> sound effect categories grouped into <em>16</em> themes, such as <em>Natural Sounds, Animals, Sports, Transport Sounds, Food & Drink, Human Vocal Sounds, and Weapons & Warfare</em>.</li>
+    <li>⚖️ <strong>Balanced Category Distribution:</strong> AudioAtlas provides a more category-balanced and comprehensive benchmark compared to the widely used AudioCaps test set.
+
+      <li>⏱️ <strong>Fine-Grained Temporal Annotation:</strong> AudioAtlas offers fine-grained temporal annotations with a
+resolution of <em>0.1</em> seconds, precisely indicating the onset of
+each audio event.</li>
+  </li>
+    <li>🧑‍🔬 <strong>Detail-Oriented Annotation:</strong> AudioAtlas provides human-annotated overall and event-level captions with rich descriptors (e.g., material, quantity, volume and emotion).</li>
+    <li>🎧 <strong>High-Quality Audio:</strong> AudioAtlas offers high-quality reference audio recorded with professional-grade equipment at high sampling rates (above 44 kHz), ensuring superior fidelity and acoustic precision.</li>
+    <li>🛠️ <strong>Higher-quality evaluation:</strong> AudioAtlas facilitates comprehensive evaluation of both temporal coherence and semantic alignment. Compared to previous benchmarks, it provides clearer optimization guidance through its high-quality reference samples, aiming to mitigate the adverse effects of overfitting on low-quality, open-world recordings. Detailed experimental results are provided in the paper.</li>
+  </ul>
+
+<figure class="centered-figure">
+  <figcaption class="img-caption">Distribution of the average number of recordings per category for each theme.</figcaption>
+      <img src="images/cate.png" alt="Distribution" style="display:block; margin:12px auto; max-width:45%; height:auto;
+      margin: 20px auto;     /* 自动居中，同时上下保留间距 */
+  border-radius: 8px;    /* 可选：圆角使页面更美观 */
+  ">
+
+    </figure>
+<div class="benchmark-table-container">
+  <div class="benchmark-table-title">Comparison with Existing T2A Benchmarks</div>
+  <table class="benchmark-table">
+    <thead>
+      <tr>
+        <th>Benchmark</th>
+        <th>Time<br>Stamp</th>
+        <th>Category<br>Balance</th>
+        <th>Category<br>Coverage</th>
+        <th>High<br>Quality</th>
+        <th>Caption words / Subcaption words</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AudioCaps</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td class="cap">10.30 / -</td>
+      </tr>
+      <tr>
+        <td>Clotho</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td>✓</td>
+        <td class="cap">11.31 / -</td>
+      </tr>
+      <tr>
+        <td>AudioSetStrong</td>
+        <td>✓</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td class="cap">- / 1.79</td>
+      </tr>
+      <tr>
+        <td>T2AGrounding</td>
+        <td>✓</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td class="cap">9.60 / 3.41</td>
+      </tr>
+      <tr>
+        <td>AudioCondition</td>
+        <td>✓</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td class="cap">10.96 / 1.79</td>
+      </tr>
+      <tr>
+        <td>AudioTime</td>
+        <td>✓</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td>✗</td>
+        <td class="cap">- / 1.79</td>
+      </tr>
+      <tr class="highlight-row">
+        <td><strong>AudioAtlas</strong></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        <td class="cap"><strong>16.28 / 8.37</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div>
+  <div class="benchmark-table-title">Statistics of AudioAtlas</div>
+  <table class="stats-table">
+    <tr>
+      <th rowspan="2">Overall</th>
+      <th colspan="3">Audio Counts & Duration</th>
+    </tr>
+    <tr>
+      <th>All</th>
+      <th>Single-Event</th>
+      <th>Multi-Event</th>
+    </tr>
+    <tr>
+      <td>Total audios</td>
+      <td>1165</td>
+      <td>749</td>
+      <td>416</td>
+    </tr>
+    <tr>
+      <td>Total duration (h)</td>
+      <td>3.23</td>
+      <td>2.03</td>
+      <td>1.39</td>
+    </tr>
+
+    <tr>
+      <th>Others</th>
+      <th>Mean</th>
+      <th>Max</th>
+      <th>Min</th>
+    </tr>
+    <tr>
+      <td>Theme audios</td>
+      <td>72.81</td>
+      <td>133</td>
+      <td>17</td>
+    </tr>
+    <tr>
+      <td>Category audios</td>
+      <td>4.22</td>
+      <td>9</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Audio events</td>
+      <td>2.91</td>
+      <td>10</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Audio duration (s)</td>
+      <td>9.97</td>
+      <td>20.37</td>
+      <td>0.8</td>
+    </tr>
+    <tr>
+      <td>Event duration (s)</td>
+      <td>5.36</td>
+      <td>19.92</td>
+      <td>0.14</td>
+    </tr>
+    <tr>
+      <td>Overall caption words</td>
+      <td>16.28</td>
+      <td>66</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>Subcaption words</td>
+      <td>8.37</td>
+      <td>26</td>
+      <td>2</td>
+    </tr>
+  </table>
+</div>
+
+<p>All annotations and audio download URLs are available in the <a href="https://github.com/AudioAtlas/AudioAtlas" target="_blank" rel="noopener noreferrer">repository</a>. After the publication of the paper, the annotation is available in the public domain under a
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">
+    Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+  </a>.</p>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Construction Pipeline</h2>
+
+  <figure class="centered-figure">
+      <img src="images/pipeline.png" alt="pipeline" style="display:block; margin:12px auto; width:100%; max-height:auto;
+      margin: 20px auto;     /* 自动居中，同时上下保留间距 */
+  border-radius: 8px;    /* 可选：圆角使页面更美观 */
+  ">
+    <figcaption class="img-caption">AudioAltas Benchmark Construction Pipeline.</figcaption>
+    </figure>
+
+  <div class="subsection">
+    <h3 class="subsection-title">Object-Centric Audio Category System</h3>
+    <p class="subsection-text">
+     We introduce SoundTrace, an object-centric audio taxonomy designed for semantic retrieval. It organizes 276 fine-grained categories under 16 high-level themes, grounded in distinct acoustic sources to support class consolidation and retrieval. By refining the AudioSet Ontology—removing redundancy, clarifying labels, and clustering related categories—we ensure broad and accurate coverage. Additional classes from AI experts and sound libraries further enhance completeness. SoundTrace is also compatible with UCS, enabling easy integration and scalable benchmark development.
+    </p>
+  </div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">Sematic Vector Database Construction</h3>
+    <p class="subsection-text">
+      Following the SoundTrace taxonomy, we construct a semantic vector database using high-quality recordings from <a href="https://artlist.io/sfx" target="_blank" rel="noopener noreferrer">Artlist</a> and <a href="https://www.audiostock.io/" target="_blank" rel="noopener noreferrer">AudioStock</a>, both curated for media production with consistent textual descriptions. Each description is encoded into a 768-dimensional vector using a pretrained Sentence-Transformers model, serving as the semantic key. These embeddings are indexed with txtai for efficient retrieval and stored in an SQL backend to support scalable querying.
+    </p>
+  </div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">Human Selection and Annotation</h3>
+    <p class="subsection-text">
+      For each category, we retrieve 500 diverse candidate samples and apply a two-stage manual refinement. First, five representative clips—three single-event and two multi-event—are selected based on semantic relevance, audio quality, absence of artifacts, and intra-class diversity. For instance, in the “revolver” category, selected clips include loading, rotating the cylinder, and firing. Second, 10-second segments of each clip are annotated with detailed global and local captions, covering subject details, actions with onomatopoeia, and acoustic modifiers such as emotion, frequency, and volume. Each event is also temporally aligned with its onset timestamp.
+    </p>
+  </div>
+
+</div>
+
+  <!-- Foldable Audio Block 1 -->
+  <div class="section">
+    <h2 class="section-title">More annotation examples</h2>
+
+    <div class="selector-bar">
+  <button onclick="showCard('card1')">Brush🚽</button>
+  <button onclick="showCard('card2')">Paper📄</button>
+  <button onclick="showCard('card3')">Amusement Park🎡</button>
+  <button onclick="showCard('card4')">Metro🚇</button>
+      </div>
+    <div class="selector-bar">
+      <button onclick="showCard('card5')">Footsteps👣</button>
+      <button onclick="showCard('card6')">Moaning😩</button>
+  <button onclick="showCard('card7')">Seal🦭</button>
+  <button onclick="showCard('card8')">Vault🤸</button>
+  <button onclick="showCard('card9')">Kitchen🍽️</button>
+</div>
+
+<!-- 所有 audio 卡片，每个包在一个 div 中，设置唯一 ID -->
+<div id="card1" class="audio-card-wrapper active-card">
+  <!-- 此处插入 audio-card-1 HTML -->
+  <div class="audio-card-new">
+  <div class="audio-card-header">Domestic Sounds, Home Sounds;Bathroom Sounds;Brush</div>
+  <div class="audio-card-summary">The swishing sound of scrubbing the toilet with a brush, mixed with the noise of the brush stirring in the water.</div>
+  <div class="waveform-container">
+    <div class="waveform" id="waveform-Artlist_100951"></div>
+  </div>
+<div class="play-control">
+    <button class="play-btn" onclick="togglePlay('Artlist_100951')">▶</button>
+  </div>
+  <div class="event-buttons-new">
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_100951', 0.0, 11.78)">0.00s - 11.78s </button>
+      <span>The swishing sound of cleaning a toilet with a brush.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_100951', 0.0, 6.33)">0.00s - 6.33s </button>
+      <span>Brush stirring in the water.</span>
+    </div>
+  </div>
+</div>
+
+
+</div>
+<div id="card2" class="audio-card-wrapper">
+  <!-- 此处插入 audio-card-2 HTML -->
+
+  <div class="audio-card-new">
+    <div class="audio-card-header">Materials Sounds;Paper</div>
+  <div class="audio-card-summary">Three bursts of rapid snipping sounds from scissors cutting thick paper.</div>
+  <div class="waveform-container">
+    <div class="waveform" id="waveform-Artlist_109935"></div>
+  </div>
+<div class="play-control">
+    <button class="play-btn" onclick="togglePlay('Artlist_109935')">▶</button>
+  </div>
+  <div class="event-buttons-new">
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_109935', 0.0, 2.26)">0.00s - 2.26s </button>
+      <span>A rapid snapping sound of scissors cutting thick paper.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_109935', 2.8, 5.89)">2.80s - 5.89s </button>
+      <span>A rapid snapping sound of scissors cutting thick paper.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_109935', 6.22, 9.72)">6.22s - 9.72s </button>
+      <span>A rapid snapping sound of scissors cutting thick paper.</span>
+    </div>
+  </div>
+</div>
+  </div>
+<div id="card3" class="audio-card-wrapper">
+  <!-- 此处插入 audio-card-3 HTML -->
+  <div class="audio-card-new">
+  <div class="audio-card-header">Sound Scene Sound;Amusement Park</div>
+  <div class="audio-card-summary">In the amusement park, after two clanging bell rings, the carousel starts with the roaring buzz of the spinning machinery, accompanied by children's joyful shouts and laughter, against a background of noisy chatter.</div>
+  <div class="waveform-container">
+    <div class="waveform" id="waveform-Artlist_106370"></div>
+  </div>
+<div class="play-control">
+    <button class="play-btn" onclick="togglePlay('Artlist_106370')">▶</button>
+  </div>
+  <div class="event-buttons-new">
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_106370', 0.0, 2.44)">0.00s - 2.44s </button>
+      <span>Clanging bell ring</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_106370', 0.0, 9.99)">0.00s - 9.99s </button>
+      <span>Noisy human voices.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_106370', 4.2, 6.30)">4.20s - 6.30s </button>
+      <span>Clanging bell ring</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_106370', 6.30, 20.04)">6.30s - 20.04s </button>
+      <span>The carousel machine whirrs and rumbles as it begins to rotates.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_106370', 9.99, 20.04)">9.99s - 20.04s </button>
+      <span>Happy shouts and laughter of children.</span>
+    </div>
+  </div>
+</div>
+
+
+</div>
+    <div id="card4" class="audio-card-wrapper">
+  <!-- 此处插入 audio-card-4 HTML -->
+  <div class="audio-card-new">
+  <div class="audio-card-header">Transport Sounds;Train & Subway & Metro</div>
+  <div class="audio-card-summary">Inside the subway, cheerful chimes from the broadcast are followed by the melodious and flowing voice of a female announcer, with the background noise of the moving train.</div>
+  <div class="waveform-container">
+    <div class="waveform" id="waveform-Artlist_109659"></div>
+  </div>
+<div class="play-control">
+    <button class="play-btn" onclick="togglePlay('Artlist_109659')">▶</button>
+  </div>
+  <div class="event-buttons-new">
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_109659', 0.0, 1.87)">0.00s - 1.87s </button>
+      <span>Inside the subway, the broadcast plays a cheerful melody.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_109659', 0.0, 10.06)">0.00s - 10.06s </button>
+      <span>Noise from the subway during operation</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('Artlist_109659', 2.23, 10.06)">2.26s - 10.06s </button>
+      <span>Inside the subway, a female announcer's voice speaks in a gentle and melodious tone.</span>
+    </div>
+  </div>
+</div>
+
+
+</div>
+<div id="card5" class="audio-card-wrapper">
+  <!-- 此处插入 audio-card-4 HTML -->
+<div class="audio-card-new">
+  <div class="audio-card-header">Human Bodily Impact Sounds;Leg;Footsteps</div>
+  <div class="audio-card-summary">Three bursts of rapid footsteps on a carpeted wooden staircase in sport shoes</div>
+  <div class="waveform-container">
+    <div class="waveform" id="waveform-audiostock_377465"></div>
+  </div>
+<div class="play-control">
+    <button class="play-btn" onclick="togglePlay('audiostock_377465')">▶</button>
+  </div>
+  <div class="event-buttons-new">
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_377465', 0.0, 2.35)">0.00s - 2.35s </button>
+      <span>Rapid footsteps on a carpeted wooden staircase in sport shoes</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_377465', 3.12, 6.3)">3.12s - 6.30s </button>
+      <span>Rapid footsteps on a carpeted wooden staircase in sport shoes</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_377465', 7.3, 9.57)">7.30s - 9.57s </button>
+      <span>Rapid footsteps on a carpeted wooden staircase in sport shoes</span>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<div id="card6" class="audio-card-wrapper">
+  <!-- 此处插入 audio-card-1 HTML -->
+  <div class="audio-card-new">
+  <div class="audio-card-header">Human Vocal Sounds;Moaning</div>
+  <div class="audio-card-summary">After a woman screams in pain, she grits her teeth and lets out a series of low, anguished moans.</div>
+  <div class="waveform-container">
+    <div class="waveform" id="waveform-audiostock_378668"></div>
+  </div>
+<div class="play-control">
+    <button class="play-btn" onclick="togglePlay('audiostock_378668')">▶</button>
+  </div>
+  <div class="event-buttons-new">
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_378668', 0.0, 0.42)">0.00s - 0.42s </button>
+      <span>A woman lets out a painful scream.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_378668', 0.42, 8.3)">0.42s - 8.30s </button>
+      <span>A woman grits her teeth and lets out a series of low, agonized moans.</span>
+    </div>
+  </div>
+</div>
+
+
+</div>
+<div id="card7" class="audio-card-wrapper">
+  <!-- 此处插入 audio-card-2 HTML -->
+<div class="audio-card-new">
+  <div class="audio-card-header">Animals;Aquatic;Sea Lion & Seal & Walrus</div>
+  <div class="audio-card-summary">Sharp cries repeatedly emitted by nearby seals, then by distant seals, with a gurgling water flow in the background.</div>
+  <div class="waveform-container">
+    <div class="waveform" id="waveform-audiostock_380188"></div>
+  </div>
+<div class="play-control">
+    <button class="play-btn" onclick="togglePlay('audiostock_380188')">▶</button>
+  </div>
+  <div class="event-buttons-new">
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_380188', 0.0, 3.2)">0.00s - 3.20s </button>
+      <span>A seal nearby repeatedly let out sharp cries.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_380188', 0.0, 9.8)">0.00s - 9.80s </button>
+      <span>A faint, gurgling flow of water.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_380188', 7.14, 9.8)">7.14s - 9.80s </button>
+      <span>Distant seals repeatedly let out sharp cries.</span>
+    </div>
+  </div>
+</div>
+</div>
+<div id="card8" class="audio-card-wrapper">
+  <!-- 此处插入 audio-card-3 HTML -->
+<div class="audio-card-new">
+  <div class="audio-card-header">Sports;Gym Exercise;Weightlifting & Floor Exercise & Vault & Trampoline</div>
+  <div class="audio-card-summary">Before the vault, there's a slight, gradually approaching running sound from the athlete's sprint, then a loud thump as the vaulting athlete launches off the trampoline, and finally a faint landing sound from the athlete.</div>
+  <div class="waveform-container">
+    <div class="waveform" id="waveform-audiostock_394161"></div>
+  </div>
+<div class="play-control">
+    <button class="play-btn" onclick="togglePlay('audiostock_394161')">▶</button>
+  </div>
+  <div class="event-buttons-new">
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_394161', 0.0, 2.42)">0.00s - 2.42s </button>
+      <span>Before vaulting, the athlete's light, gradually approaching running footsteps.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_394161', 2.42, 3.61)">2.42s - 3.61s </button>
+      <span>A loud thump as the vaulting athlete launches off the trampoline.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_394161', 3.61, 4.66)">3.61s - 4.66s </button>
+      <span>The slight sound of the athlete landing.</span>
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+    <div id="card9" class="audio-card-wrapper">
+  <!-- 此处插入 audio-card-4 HTML -->
+<div class="audio-card-new">
+  <div class="audio-card-header">Sound Scene Sound;Kitchen</div>
+  <div class="audio-card-summary">In the kitchen, scrubbing dishes in water is heard, followed by the clinking of plates, then more dish scrubbing in water, with a continuous rush of water from the faucet in the background, ending with the faucet turning off and a faint trickle of water.</div>
+  <div class="waveform-container">
+    <div class="waveform" id="waveform-audiostock_408248_1"></div>
+  </div>
+<div class="play-control">
+    <button class="play-btn" onclick="togglePlay('audiostock_408248_1')">▶</button>
+  </div>
+  <div class="event-buttons-new">
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_408248_1', 0.0, 7.44)">0.00s - 7.44s </button>
+      <span>Water gushing rapidly from a faucet.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_408248_1', 0.0, 0.86)">0.00s - 0.86s </button>
+      <span>Scrubbing dishes in water.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_408248_1', 0.86, 3.7)">0.86s - 3.70s </button>
+      <span>The clattering collision sound of dishes.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_408248_1', 3.7, 7.44)">3.70s - 7.44s </button>
+      <span>Scrubbing dishes in water.</span>
+    </div>
+    <div class="event-item">
+      <button onclick="playSegment('audiostock_408248_1', 7.44, 10.0)">7.44s - 10.00s </button>
+      <span>The sound of turning off the faucet, followed by a faint trickle of water.</span>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+
+</div>
+
+
+  <div class="section">
+  <h2 class="section-title">SoundTrace</h2>
+<details class="tree-node">
+  <summary>🌲 <strong>Natural Sounds</strong></summary>
+  <ul>
+    <li>🏜️ Desert</li>
+    <li>🔥 Fire</li>
+    <li>🌨️ Hail</li>
+    <li>🌧️ Rain</li>
+    <li>❄️ Snow</li>
+    <li>⛈️ Thunder</li>
+    <li>🌊 Underwater</li>
+    <li>🏞️ Waterfall</li>
+    <li>💨 Wind</li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🌿 Vegetation</summary>
+        <ul>
+          <li>🍃 Bushes & Grass & Leaves</li>
+          <li>🌳 Tree</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🌋 Natural Disaster</summary>
+        <ul>
+          <li>🏔️ Debris Flow & Avalanche</li>
+          <li>🌐 Earthquake</li>
+          <li>🌪️ Tornado & Typhoon & Storm</li>
+          <li>🌊 Tsunami</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🌾 Wild</summary>
+        <ul>
+          <li>🏕️ Field & Countryside</li>
+          <li>🌲 Forest & Woods & Jungle</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🌡️ Geothermal</summary>
+        <ul>
+          <li>🫧 Fumarole & Geyser</li>
+          <li>🌋 Lava & Volcano</li>
+          <li>🪨 Mud Pots</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🪨 Rocks</summary>
+        <ul>
+          <li>🔹 Gravel</li>
+          <li>🪨 Rocks</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🌊 Wave</summary>
+        <ul>
+          <li>🌊 Ocean</li>
+          <li>🏞️ River & Stream</li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🐾 <strong>Animals</strong></summary>
+  <ul>
+    <li>🐭 Mouse & Rat</li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🌲 Wild</summary>
+        <ul>
+          <li>🦇 Bat</li>
+          <li>🐻 Bear</li>
+          <li>🐗 Boar</li>
+          <li>🐘 Elephant</li>
+          <li>🦊 Fox</li>
+          <li>🦛 Hippo</li>
+          <li>🦁 Lion</li>
+          <li>🐿️ Squirrel</li>
+          <li>🐯 Tiger</li>
+          <li>🐺 Wolves</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🐝 Insect</summary>
+        <ul>
+          <li>🐝 Bee & Wasp & Hornet</li>
+          <li>🦗 Cicada</li>
+          <li>🦗 Cricket & Katydid</li>
+          <li>🪰 Fly & Housefly & Mosquito</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🏡 Pets</summary>
+        <ul>
+          <li>🐱 Cat</li>
+          <li>🐶 Dog</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🚜 Farm</summary>
+        <ul>
+          <li>🐄 Cattle</li>
+          <li>🐔 Cock & Hen & Chicken</li>
+          <li>🐴 Donkey</li>
+          <li>🐎 Horse</li>
+          <li>🐖 Pig</li>
+          <li>🐐 Sheep & Goat</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🕊️ Birds</summary>
+        <ul>
+          <li>🐦 Crows</li>
+          <li>🦅 Eagles & Vultures</li>
+          <li>🦜 Parrots</li>
+          <li>🕊️ Seagulls</li>
+          <li>🐧 Sparrows & Magpies & Doves</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🌊 Aquatic</summary>
+        <ul>
+          <li>🐬 Dolphin</li>
+          <li>🦭 Sea Lion & Seal & Walrus</li>
+          <li>🐋 Whale</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🐸 Amphibian</summary>
+        <ul>
+          <li>🐸 Frog</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🐒 Primate</summary>
+        <ul>
+          <li>🐵 Monkey & Chimpanzee</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🐍 Reptile</summary>
+        <ul>
+          <li>🐍 Snake</li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+</details>
+<details class="tree-node">
+  <summary>🗣️ <strong>Human Vocal Sounds</strong></summary>
+  <ul>
+    <li>😠 Booing</li>
+    <li>👶 Child & Kid & Baby Speech</li>
+    <li>🎼 Chorus & Choral & Choir</li>
+    <li>😭 Crying & Sobbing & Wailing</li>
+    <li>👩 Female Speech</li>
+    <li>😤 Grunting</li>
+    <li>🗯️ Hubbub & Babble Noise & Chatter</li>
+    <li>😂 Laughing</li>
+    <li>👨 Male Speech</li>
+    <li>😩 Moaning</li>
+    <li>👹 Monster Voice</li>
+    <li>🥊 Physical Effort Sounds & Human Battle Sounds</li>
+    <li>😱 Screaming</li>
+    <li>📢 Shouting</li>
+    <li>🎤 Singing</li>
+    <li>🤫 Whispering</li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🧍‍♂️ <strong>Human Non-Speech Oral Sounds And Others</strong></summary>
+  <ul>
+    <li>🌬️ Blow</li>
+    <li>😮‍💨 Breath</li>
+    <li>🤢 Burp</li>
+    <li>😷 Cough</li>
+    <li>💨 Farts</li>
+    <li>🫧 Gargle</li>
+    <li>😧 Gasp</li>
+    <li>❤️ Heartbeat</li>
+    <li>💋 Kiss</li>
+    <li>🚽 Pee</li>
+    <li>😔 Sigh</li>
+    <li>🖐️ Skin</li>
+    <li>🤧 Sneeze</li>
+    <li>👃 Sniff</li>
+    <li>💤 Snore</li>
+    <li>🤮 Spit</li>
+    <li>🤢 Vomit</li>
+    <li>🎵 Whistles</li>
+    <li>🥱 Yawn</li>
+    <li>
+      <details class="tree-node">
+        <summary>🍽️ Eating & Drinking</summary>
+        <ul>
+          <li>🍖 Chewing & Biting & Mastication</li>
+          <li>🥤 Drinking</li>
+          <li>😋 Ingestion & Swallow</li>
+          <li>🍜 Slurp & Sip & Suck</li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🦵 <strong>Human Bodily Impact Sounds</strong></summary>
+  <ul>
+    <li>👏 Clapping</li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🩸 Gore</summary>
+        <ul>
+          <li>💉 Blood Splattering</li>
+          <li>🦴 Bone Cracking</li>
+          <li>🗡️ Stab & Pierce</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>☝️ Finger</summary>
+        <ul>
+          <li>🤏 Cracking Knuckles</li>
+          <li>🫰 Snapping Fingers</li>
+          <li>⌨️ Typing</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🥊 Combat Sounds</summary>
+        <ul>
+          <li>👊 Fight & Punch & Strike & Block</li>
+          <li>🧍 Knock Down & Take Down</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🦶 Leg</summary>
+        <ul>
+          <li>👣 Footsteps</li>
+          <li>🦘 Jumping</li>
+          <li>🦵 Kick</li>
+          <li>🏃 Run & Sprint & Dash</li>
+          <li>🔊 Stomping</li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🌐 <strong>Channel, Environment And Background</strong></summary>
+  <ul>
+    <li>🖥️ Computer & Digital & Synthesized Voices</li>
+    <li>🌀 Echo & Reverberation</li>
+    <li>🔊 Loudspeaker & Amplifier</li>
+    <li>📻 Radio & Intercom</li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🌆 <strong>Sound Scene Sound</strong></summary>
+  <ul>
+    <li>✈️ Airport</li>
+    <li>🎢 Amusement Park</li>
+    <li>🍻 Bar & Restaurant</li>
+    <li>🏖️ Beach</li>
+    <li>⛪ Church & Temple</li>
+    <li>🎼 Concert Hall</li>
+    <li>🏗️ Factory & Industry & Construction Noise</li>
+    <li>🏋️ Gym</li>
+    <li>👨‍🍳 Kitchen</li>
+    <li>💼 Office</li>
+    <li>🎉 Parade & Protest</li>
+    <li>🚓 Prison</li>
+    <li>🏫 School</li>
+    <li>🛍️ Shopping Mall & Market</li>
+    <li>🪐 Space & Universe</li>
+    <li>🏟️ Sports Stadium</li>
+    <li>🚦 Traffic Street & Roadway Noise</li>
+    <li>🚇 Train & Metro & Subway Station</li>
+    <li>🌇 Urban & Public Square</li>
+    <li>💣 Warfare</li>
+    <li>🎰 Casino</li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>💥 <strong>Weapons & Warfare</strong></summary>
+  <ul>
+    <li>🚀 Rocket & Missile</li>
+    <li>🌊 Submarine</li>
+    <li>🛡️ Tank & Armored Vehicle</li>
+
+    <li>
+      <details class="tree-node">
+        <summary>✈️ Aircraft</summary>
+        <ul>
+          <li>💥 Aircraft Crash</li>
+          <li>🛸 Drone</li>
+          <li>🛩️ Fighter Jet & Fighter Aircraft & Jet & Helicopter</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🗡️ Cold Weapons</summary>
+        <ul>
+          <li>🛡️ Armor</li>
+          <li>🏹 Arrow & Bow</li>
+          <li>🔪 Knife & Sword</li>
+          <li>📿 Whip</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🔫 Firearms</summary>
+        <ul>
+          <li>💨 Bullet</li>
+          <li>🔥 Flamethrower</li>
+          <li>🔦 Lasers</li>
+          <li>🔫 Pistol & Revolver</li>
+          <li>🎯 Rifle & Shotgun</li>
+          <li>🎯 Sniper Rifle</li>
+          <li>🧨 Submachine Gun & Machine Gun</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>💣 Explosions</summary>
+        <ul>
+          <li>🔊 Cannon & Grenade Launcher & Mortar</li>
+          <li>🧨 Grenade & Landmine & Bomb</li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🏅 <strong>Sports</strong></summary>
+  <ul>
+    <li>🃏 Cards</li>
+    <li>♟️ Chess</li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🏓 Racket & Stick Sports</summary>
+        <ul>
+          <li>🏸 Badminton</li>
+          <li>⚾ Baseball</li>
+          <li>🎱 Billiards</li>
+          <li>🤺 Fencing</li>
+          <li>🏌️ Golf</li>
+          <li>🏓 Table Tennis</li>
+          <li>🎾 Tennis</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🏀 Ball Sports</summary>
+        <ul>
+          <li>🏀 Basketball</li>
+          <li>🎳 Bowling</li>
+          <li>⚽ Soccer</li>
+          <li>🏐 Volleyball</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🥊 Combat Sports</summary>
+        <ul>
+          <li>🥊 Boxing</li>
+          <li>🥋 Martial Arts & Wrestling & Judo</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🏊 Water Sports</summary>
+        <ul>
+          <li>🤿 Diving</li>
+          <li>🏊 Swimming</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>⛰️ Outdoors</summary>
+        <ul>
+          <li>🎣 Fishing & Parachuting & Rock Climbing</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>⛷️ Snow & Ice Sports</summary>
+        <ul>
+          <li>🏒 Ice Hockey</li>
+          <li>⛷️ Skiing & Snowboarding & Ice Skating</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🛹 Roller Sports</summary>
+        <ul>
+          <li>🛹 Skateboarding & Roller Skating</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🏋️ Gym Exercise</summary>
+        <ul>
+          <li>🤸 Weightlifting & Floor Exercise & Vault & Trampoline</li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🚗 <strong>Transport Sounds</strong></summary>
+  <ul>
+    <li>🚚 Truck & Bus</li>
+    <li>🚲 Bicycle</li>
+    <li>🚗 Car</li>
+    <li>⛴️ Cruise Ship, Hovercraft & Motorboat & Speedboat & Sailboat</li>
+    <li>🏍️ Motorcycle</li>
+    <li>🚓 Police Car & Ambulance & Fire Truck</li>
+    <li>🚆 Train & Subway & Metro</li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🏎️ Race Car</summary>
+        <ul>
+          <li>🏁 F1 Car & Rally Car & Off-Road Vehicle</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>✈️ Flight</summary>
+        <ul>
+          <li>🚁 Helicopter</li>
+          <li>✈️ Plane</li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🍽️ <strong>Food & Drink</strong></summary>
+  <ul>
+    <li>🫗 Pour</li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🍶 Tableware</summary>
+        <ul>
+          <li>🍷 Bottle & Wine Glasses</li>
+          <li>🥫 Can</li>
+          <li>🍽️ Plates & Cutlery & Bowl</li>
+          <li>🍳 Pots & Pans</li>
+          <li>🧂 Salt And Pepper Shakers</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🍳 Cook</summary>
+        <ul>
+          <li>🔪 Chopping Food</li>
+          <li>🔥 Frying & Roasting Food</li>
+          <li>🥔 Mashing Food</li>
+          <li>🍲 Stewing Food</li>
+          <li>🍜 Stir-Frying Food</li>
+          <li>🥣 Stiring & Blending Food</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>👨‍🍳 Kitchenware</summary>
+        <ul>
+          <li>☕ Coffee Maker</li>
+          <li>🚿 Dishwasher</li>
+          <li>🫖 Electric Kettle</li>
+          <li>🔥 Grill Pan</li>
+          <li>🧃 Juicer & Blender</li>
+          <li>📡 Microwave Oven</li>
+          <li>🍚 Rice Cooker & Pressure Cooker</li>
+          <li>🍞 Toaster</li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🏠 <strong>Domestic Sounds, Home Sounds</strong></summary>
+  <ul>
+    <li>🛍️ Bags</li>
+    <li>⏰ Clocks</li>
+    <li>🪙 Coin</li>
+    <li>📿 Jewelry & Bracelets</li>
+    <li>🔑 Keys</li>
+    <li>🧳 Luggage</li>
+    <li>🌂 Umbrella</li>
+    <li>🪡 Zipper</li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🔌 Electronic</summary>
+        <ul>
+          <li>🚨 Alarm</li>
+          <li>❄️ Air Conditioning</li>
+          <li>🧼 Cleaner</li>
+          <li>🪒 Electric Shaver</li>
+          <li>🌀 Fan</li>
+          <li>💈 Hair Dryer</li>
+          <li>📺 Television & Projector</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🛁 Bathroom Sounds</summary>
+        <ul>
+          <li>🛁 Bathtub & Sink</li>
+          <li>🧽 Brush</li>
+          <li>🚿 Shower</li>
+          <li>🚽 Toilet Flush</li>
+          <li>🪥 Toothbrush</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <details class="tree-node">
+        <summary>🚪 Household Sounds</summary>
+        <ul>
+          <li>🚪 Cupboard</li>
+          <li>🚪 Doors</li>
+          <li>🗄️ Drawers</li>
+          <li>🛋️ Furniture</li>
+          <li>🔒 Lock</li>
+          <li>🪟 Windows</li>
+        </ul>
+      </details>
+    </li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🛠️ <strong>Non-Electronic Tools</strong></summary>
+  <ul>
+    <li>🔔 Bells</li>
+    <li>🎆 Fireworks</li>
+    <li>⚙️ Gears</li>
+    <li>🎈 Inflator</li>
+    <li>🔥 Match</li>
+    <li>🪢 Rope</li>
+    <li>🎗️ Seatbelt</li>
+    <li>🧴 Spraying Can</li>
+    <li>📼 Tape</li>
+    <li>📏 Tape Measure</li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🏢 <strong>Office And Learning Sounds</strong></summary>
+  <ul>
+    <li>📖 Book</li>
+    <li>📷 Camera</li>
+    <li>💻 Computer</li>
+    <li>🖱️ Mouse</li>
+    <li>🖨️ Printer</li>
+    <li>📎 Stapler</li>
+    <li>📞 Telephone</li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🛠️ <strong>Processed Tools</strong></summary>
+  <ul>
+    <li>🪓 Axe & Hammer</li>
+    <li>🛞 Drill & Cutter</li>
+    <li>🪚 Hacksaw & Saw</li>
+    <li>🌾 Lawn Mower</li>
+    <li>✂️ Metal Scissors</li>
+    <li>🔫 Nail Gun</li>
+    <li>🧲 Pulleys & Roller</li>
+    <li>🫧 Pump & Bellow</li>
+    <li>🧽 Sanding</li>
+    <li>🧵 Sewing Machine</li>
+    <li>🔘 Switch</li>
+  </ul>
+</details>
+    <details class="tree-node">
+  <summary>🧱 <strong>Materials Sounds</strong></summary>
+  <ul>
+    <li>🛏️ Blanket</li>
+    <li>🏺 Ceramics</li>
+    <li>🪁 Cloth & Ship Sail & Parachute</li>
+    <li>⚡ Electricity</li>
+    <li>🧊 Glass</li>
+    <li>❄️ Ice</li>
+    <li>👞 Leather</li>
+    <li>💧 Liquid & Mud</li>
+    <li>🔩 Metal</li>
+    <li>🧵 Nylon</li>
+    <li>📄 Paper</li>
+    <li>🧴 Plastic</li>
+    <li>🎈 Rubber</li>
+    <li>🧽 Sponge</li>
+    <li>🪵 Wood</li>
+  </ul>
+</details>
+  </div>
+
+
+  <hr class="section-divider">
+<p class="notice-line">⚠️ Note: The following content constitutes the appendix of the paper and is intended to be read after reviewing the paper.</p>
+
+<h1 id="appendix">Appendix</h1>
+
+<div class="section">
+  <h2 class="section-title">A&nbsp;&nbsp;&nbsp;&nbsp;Supplementary Experimental Details</h2>
+</div>
+<div class="subsection">
+    <h3 class="subsection-title">A.1&nbsp;&nbsp;&nbsp;&nbsp;Text-to-Audio Generation</h3>
+    <p class="subsection-text">
+     <em><strong> Training Dateset Details</strong></em>. The training set for Tango-Full includes <a href="https://aclanthology.org/N19-1011/" target="_blank" rel="noopener noreferrer">AudioCaps</a>, <a href="https://ieeexplore.ieee.org/abstract/document/10572302" target="_blank" rel="noopener noreferrer">WavCaps</a>, <a href="https://dl.acm.org/doi/abs/10.1145/2647868.2655045" target="_blank" rel="noopener noreferrer">UrbanSound</a>, <a href="https://www.kaggle.com/datasets/soumendraprasad/musical-instruments-sound-dataset" target="_blank" rel="noopener noreferrer">Musical Instrument</a>, <a href="https://arxiv.org/abs/2301.11325" target="_blank" rel="noopener noreferrer">MusicCaps</a>, <a href="https://ieeexplore.ieee.org/abstract/document/1021072" target="_blank" rel="noopener noreferrer">GTZAN</a>, and <a href="https://dl.acm.org/doi/abs/10.1145/2733373.2806390" target="_blank" rel="noopener noreferrer">ESC</a>. All audio clips longer than 10 seconds are segmented into 10-second chunks and resampled to 16kHz.
+
+The training set for AudioLDM-Full further includes <a href="https://www.adobe.com/products/audition/offers/adobeauditiondlcsfx" target="_blank" rel="noopener noreferrer">Adobe Foley</a>, <a href="https://ieeexplore.ieee.org/abstract/document/9052990" target="_blank" rel="noopener noreferrer">Clotho</a>, <a href="https://ieeexplore.ieee.org/abstract/document/9645159" target="_blank" rel="noopener noreferrer">FreeSound50K</a>, <a href="https://ieeexplore.ieee.org/abstract/document/7760424" target="_blank" rel="noopener noreferrer">TUT</a>, <a href="https://dcase.community/challenge2023/task-foley-sound-synthesis" target="_blank" rel="noopener noreferrer">DCASE2023 Task 7</a>, <a href="https://artlist.io/" target="_blank" rel="noopener noreferrer">Artlist</a>, <a href="https://www.audiostock.io/" target="_blank" rel="noopener noreferrer">AudioStock</a>, and <a href="https://www.epidemicsound.com/" target="_blank" rel="noopener noreferrer">Epidemic Sound</a>, with any samples overlapping with the AudioAtlas removed.
+
+We use GPT-4 to convert raw textual descriptions into full captions for uncaptioned samples. In addition, we apply stricter data cleaning procedures: for long recordings, only the first 30 seconds are retained, and samples are filtered using CLAP, retaining only those with a similarity score above 0.4.
+    </p>
+  </div>
+
+  <div class="subsection">
+    <h3 class="subsection-title">A.2&nbsp;&nbsp;&nbsp;&nbsp;Temporally Controllable Text-to-Audio Generation</h3>
+    <p class="subsection-text">
+     <em><strong> Fusion Rate Ablation in CRD</strong></em>. As shown in the Tab. 6, when the fusion step is set to 1.0, temporal controllability (measured by S-CLAP and S-CIDEr) and semantic alignment (measured by CLAP) are lower compared to fusion steps of 0.75 or 0.5. This is likely due to semantic suppression in overlapping regions. As the fusion step decreases, such suppression is reduced, leading to improvements in both temporal and overall performance.
+
+However, when the fusion step becomes too low, the number of denoising steps involving region-wise cross-attention is insufficient. This results in content blending within overlapping regions and a lack of global stylistic coherence, ultimately degrading audio quality (FAD) and semantic alignment.
+    </p>
+    <p class="table-caption"><strong>Table 6:</strong> Ablation Study on Fusion Rate <em>r</em> in CRD</p>
+    <table class="styled-table">
+  <thead>
+    <tr>
+      <th rowspan="2">Fusion Rate</th>
+      <th colspan="2">Overall</th>
+      <th colspan="2">Temporal</th>
+    </tr>
+    <tr>
+      <th>CLAP↑</th>
+      <th>FAD↓</th>
+      <th>S-CLAP↑</th>
+      <th>S-CIDER↑</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>0.49</td>
+      <td>1.96</td>
+      <td>0.41</td>
+      <td>0.20</td>
+    </tr>
+    <tr>
+      <td>0.75</td>
+      <td>0.50</td>
+      <td><strong>1.75</strong></td>
+      <td>0.42</td>
+      <td><strong>0.21</strong></td>
+    </tr>
+    <tr>
+      <td>0.5</td>
+      <td><strong>0.51</strong></td>
+      <td>2.09</td>
+      <td><strong>0.43</strong></td>
+      <td>0.21</td>
+    </tr>
+    <tr>
+      <td>0.25</td>
+      <td>0.47</td>
+      <td>2.31</td>
+      <td>0.40</td>
+      <td>0.20</td>
+    </tr>
+  </tbody>
+</table>
+
+
+    <p class="subsection-text">
+     <em><strong> Qualitative comparison</strong></em>. As shown in Fig. 3, we present qualitative comparison examples of temporally controllable text-to-audio generation methods. As previously discussed, training-free approaches, including DC, CRD, and MD, demonstrate significantly better temporal controllability than Make2, since Make2 only receives coarse subprompt position cues in the form of pairs like <<em>A cat meows</em> \& <em>start</em>> or <<em>A cat meows</em> \& <em>mid</em>>. Moreover, Make2 also struggles with controlling the number of sound occurrences over time, resulting in mismatches between prompt timing and actual sound placement. As shown in Fig. 3 line 4, the <em>A cat meows</em> event occurs only once, and its timing does not align with the reference.
+
+Among the training-free methods, MD produces strong noise in overlapping regions, with low fidelity and little discernible content. The boxed overlap regions in Fig. 3 line 3 display that spectrogram is dominated by random noise patterns. In contrast, CRD better preserves clarity, but sometimes shows semantic suppression in overlapping segments. For instance, in the example of Fig. 3 line 2 shown, the <em>A cat meows</em> sound dominates the overlap region, suppressing the presence of the <em>crickets chirp</em>. As a result, the <em>crickets chirp</em> sound appears fragmented and inconsistent in the overlap regions. DC, Fig. 3 line 1, which simply concatenates independently generated regions, avoids this issue due to the complete isolation of subprompts during generation. In the overlap regions, spectrograms of both sound events are clearly distinguishable.
+</p>
+    <img src="images/subject1.png" alt="subject1" style="display:block; margin:12px auto; width:50%; max-height:auto;
+      margin: 20px auto;     /* 自动居中，同时上下保留间距 */
+  border-radius: 8px;    /* 可选：圆角使页面更美观 */
+  ">
+    <p class="table-caption"><strong>Figure 3:</strong> Qualitative comparison result of temporally controllable
+Text-to-Audio methods. Boxed regions indicate the occurrence of the event <em>A cat meows</em>. <span style="color:#ff69b4">Box</span>: correct timing and audio content; <span style="color:#c084fc">Box</span>: semantic suppression; <span style="color:#87cefa">Box</span>: noise; <span style="color:#ffd700">Box</span>: temporal misalignment.</p>
+<p class="subsection-text">
+      However, as illustrated in Fig. 4 line 2, DC lacks a mechanism to enforce global stylistic consistency, resulting in noticeable variations in timbre, background texture, and unnatural transitions between adjacent regions. The spectrograms of adjacent regions exhibit clear discontinuities. In comparison, CRD, Fig. 4 line 1, maintains a unified global style, with smooth spectrogram transitions across regions and a more coherent auditory experience.
+    </p>
+
+<img src="images/subject2.png" alt="subject2" style="display:block; margin:12px auto; width:50%; max-height:auto;
+      margin: 20px auto;     /* 自动居中，同时上下保留间距 */
+  border-radius: 8px;    /* 可选：圆角使页面更美观 */
+  ">
+    <p class="table-caption"><strong>Figure 4:</strong> Qualitative comparison result of CRD and DC. <span style="color:#ff4d4d">Box</span>: stylistic inconsistency or unnatural transitions between
+regions. Event1: <em>Cheers and applause from the crowd</em>; Event2: <em>Booing and shouting from the crowd, along with scattered applause</em>;  Event3: <em>A few scattered shouts from men</em>.</p>
+
+  </div>
+</div>
 
 <script>
-  const waves = {};
 
-  function createWaveSurfer(containerId, audioFile) {
-    return WaveSurfer.create({
-      container: containerId,
-      waveColor: '#aaa',
-      progressColor: '#007bff',
-      height: 100
-    }).load(audioFile);
-  }
 
   function playSegment(key, start, end) {
-    const wave = waves[key];
+    const wave = window.wavesurfers[key];
     if (!wave) return;
     wave.play(start, end);
   }
 
-  // 初始化播放器
-  waves['Artlist_100349'] = WaveSurfer.create({
-    container: '#waveform-Artlist_100349',
-    waveColor: '#aaa',
-    progressColor: '#007bff',
-    height: 100
+  function initWave(id, file, key) {
+
+    const wave = WaveSurfer.create({
+      container: id,
+      waveColor: '#ccc',
+      progressColor: '#007bff',
+  cursorColor: '#007bff',
+  height: 150,             // 使 canvas 本身不太高
+  barHeight: 1,            // 让波形偏细
+  normalize: true,         // 标准化振幅，避免贴边
+  responsive: true,
+
+    });
+    wave.load(file);
+
+    // ✅ 点击波形区域时从点击位置播放
+  wave.on('interaction', () => {
+    wave.play();
   });
-  waves['Artlist_100349'].load('audios/Artlist_100349.wav');
+    // ✅ 使用统一容器
+  window.wavesurfers = window.wavesurfers || {};
+  window.wavesurfers[key] = wave;
+  }
+function showCard(cardId) {
+  const allCards = document.querySelectorAll('.audio-card-wrapper');
+  allCards.forEach(card => card.classList.remove('active-card'));
+
+  const target = document.getElementById(cardId);
+  if (target) target.classList.add('active-card');
+}
+
+function togglePlay(audioId) {
+  const wavesurfer = window.wavesurfers && window.wavesurfers[audioId];
+  if (!wavesurfer) return;
+
+  if (wavesurfer.isPlaying()) {
+    wavesurfer.pause();
+  } else {
+    wavesurfer.play();
+  }
+
+
+}
+  // Initialize waveforms
+  initWave('#waveform-Artlist_100349', 'audios/Artlist_100349.wav', 'Artlist_100349');
+  initWave('#waveform-Artlist_100951', 'audios/Artlist_100951.wav', 'Artlist_100951');
+  initWave('#waveform-Artlist_106370', 'audios/Artlist_106370.wav', 'Artlist_106370');
+  initWave('#waveform-Artlist_109659', 'audios/Artlist_109659.wav', 'Artlist_109659');
+  initWave('#waveform-Artlist_109935', 'audios/Artlist_109935.wav', 'Artlist_109935');
+  initWave('#waveform-audiostock_377465', 'audios/audiostock_377465.wav', 'audiostock_377465');
+  initWave('#waveform-audiostock_378668', 'audios/audiostock_378668.wav', 'audiostock_378668');
+  initWave('#waveform-audiostock_380188', 'audios/audiostock_380188.wav', 'audiostock_380188');
+  initWave('#waveform-audiostock_394161', 'audios/audiostock_394161.wav', 'audiostock_394161');
+  initWave('#waveform-audiostock_408248_1', 'audios/audiostock_408248_1.wav', 'audiostock_408248_1');
+
 </script>
 
 </body>
