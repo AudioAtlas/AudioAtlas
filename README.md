@@ -18,16 +18,11 @@ AudioAtlas, a comprehensive and balanced benchmark for movie-oriented text-to-au
 ## 📁 Repository Structure
 
 ├── audios/ # Contains sample audios
-
 ├── images/ # Figures and icons
-
 ├── metas/ # All annotations and SoundTrace jsonl
-
-├── LICENSE # License info (conditional)
-
-├── README.md # This file
-
-└── index.html # Interactive demo
+├── index.html # Interactive demo
+├── LICENSE # License info
+└── README.md # This file
 
 ## 🔍 Preview
 
@@ -35,9 +30,7 @@ Further details are available on the project page: https://audioatlas.github.io/
 
 ## 📄 License
 
-> ⚠️ **Current Usage Restriction**  
-> AudioAtlas is currently available **for browsing only**. Redistribution or usage in derivative works is **not permitted until the associated paper is published**.
 
-Upon publication, this dataset will be released under the  
+This dataset is released under the  
 **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)** license.  
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
