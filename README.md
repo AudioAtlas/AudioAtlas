@@ -18,11 +18,16 @@ AudioAtlas, a comprehensive and balanced benchmark for movie-oriented text-to-au
 ## 📁 Repository Structure
 
 ├── audios/ # Contains sample audios
+
 ├── images/ # Figures and icons
+
 ├── metas/ # All annotations and SoundTrace jsonl
-├── index.html # Interactive demo
+
 ├── LICENSE # License info
-└── README.md # This file
+
+├── README.md # This file
+
+└── index.html # Interactive demo
 
 ## 🔍 Preview
 
