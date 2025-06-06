@@ -37,7 +37,7 @@ h2 {
 
   h1 {
     font-size: 2.0em;
-    margin-bottom: 1.5em;
+    margin-bottom: 1.2em;
   }
 
 
@@ -71,7 +71,7 @@ font-size: 1.8em;
 
 
   .section {
-    margin-top: 100px;
+    margin-top: 50px;
   }
 .section p {
   margin-top: 2px;
@@ -372,7 +372,7 @@ ul.dataset-highlights li::before {
   font-size: 1.15em;
   text-align: center;
   margin-top: 0;
-  margin-bottom: 2.7em;
+  margin-bottom: 0;
 }
 
 a {
@@ -514,6 +514,52 @@ table.stats-table {
   margin: 4px 0 0 0;
 }
 
+
+.split-cell .left,
+.split-cell .right,
+.split-cell .slash {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  font-weight: normal;
+}
+.split-cell {
+  display: flex;
+  justify-content: center; /* 居中整列 */
+  align-items: center;
+  gap: 4px;
+  font-variant-numeric: tabular-nums; /* 等宽数字 */
+  white-space: nowrap;
+  font-family: inherit;
+  font-weight: normal;
+}
+
+.split-cell .left{
+  min-width: 2.5em;
+  text-align: right;
+}
+.split-cell .right {
+  min-width: 2.5em;
+  text-align: left;
+}
+
+.split-cell .slash {
+  min-width: 0.5em;
+  text-align: center;
+}
+.centered-figure {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: visible; /* 保证超出也不裁剪 */
+}
+
+.wide-img {
+  width: 120%;
+  max-width: none;
+  display: block;
+  border-radius: 8px;
+}
 </style>
 </head>
 <body>
@@ -528,22 +574,46 @@ table.stats-table {
       vertical-align: middle;
       margin-right: 15px;
       margin-bottom: 8px;"
-  >AudioAtlas<br> A Comprehensive and Balanced Benchmark Towards Movie-Oriented Text-to-Auido Generation</h1>
+  ><span class="gradient-text">AudioAtlas</span><br> A Comprehensive and Balanced Benchmark Towards Movie-Oriented Text-to-Auido Generation</h1>
 
-<p class="sub-author">Anonymous</p>
+<p class="sub-author">Anonymous </p>
 
+<p class="sub-author">
+    <button onclick="location.href='#Annotation Examples'" style="
+  color: #b38bd4;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: underline;
 
+">Annotation Examples</button>
+
+    <button onclick="location.href='#appendix'" style="
+  color: #b38bd4;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: underline;
+
+">Appendix</button>
+     </p>
 
 
      <div class="section">
-  <h2 class="section-title">Overview of AudioAtlas</h2>
+  <h2 class="section-title">Overview</h2>
         <hr class="section-divider">
   <p>
-    Recent rapid progress in Text-to-Audio (T2A) models contrasts sharply with the stagnation observed in the evolution of corresponding evaluation benchmarks. Existing benchmarks, such as AudioCaps, suffer from limited diversity and quality, as well as biased category distributions, leading to increasingly questionable reliability in assessing advanced T2A models. We introduce AudioAtlas, a comprehensive and balanced benchmark for movie-oriented text-to-audio generation.
+    Recent rapid progress in Text-to-Audio (T2A) models contrasts sharply with the stagnation observed in the evolution of corresponding evaluation benchmarks. Existing benchmarks, such as AudioCaps, suffer from limited diversity and quality, as well as biased category distributions, leading to increasingly questionable reliability in assessing advanced T2A models. We introduce <span class="gradient-text">AudioAtlas</span>, a comprehensive and balanced benchmark for movie-oriented text-to-audio generation.
     AudioAtlas contains 1,165 high-quality and diverse recordings, comprising 276 categories across 16 themes.
-    Built upon a well-structured audio category system-SoundTrace, AudioAtlas provides a more category-balanced and comprehensive benchmark compared to the widely used AudioCaps test set.
-    Furthermore, we provide detailed human annotations covering both temporal and semantic dimensions.
+    Built upon a well-structured audio category system-<span class="gradient-text">SoundTrace</span>, AudioAtlas provides a more category-balanced and comprehensive benchmark compared to the widely used AudioCaps test set.
+    Furthermore, we provide detailed human annotations covering both temporal and semantic dimensions. Benchmark is available in the <a href="https://github.com/AudioAtlas/AudioAtlas" target="_blank" rel="noopener noreferrer">repository</a>. The benchmark is available in the public domain under a
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">
+    Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+  </a>.
   </p>
+
 <ul class="dataset-highlights">
     <li>🧩 <strong>Rich Diversity:</strong> Based on our proposed <em>SoundTrace</em>, an object-centric audio taxonomy, AudioAtlas comprises <em>276</em> sound effect categories grouped into <em>16</em> themes, such as <em>Natural Sounds, Animals, Sports, Transport Sounds, Food & Drink, Human Vocal Sounds, and Weapons & Warfare</em>.</li>
     <li>⚖️ <strong>Balanced Category Distribution:</strong> AudioAtlas provides a more category-balanced and comprehensive benchmark compared to the widely used AudioCaps test set.
@@ -563,9 +633,9 @@ each audio event.</li>
       margin: 20px auto;     /* 自动居中，同时上下保留间距 */
   border-radius: 8px;    /* 可选：圆角使页面更美观 */
   ">
-<figcaption class="img-caption">Distribution of the average number of recordings per category for each theme.</figcaption>
-    </figure>
 
+    </figure>
+<div class="benchmark-table-title">Distribution of the average number of recordings per category for each theme.</div>
 
   <table class="stats-table">
     <thead>
@@ -585,7 +655,11 @@ each audio event.</li>
         <td>❌</td>
         <td>❌</td>
         <td>❌</td>
-        <td class="cap">10.30 / -</td>
+        <td class="split-cell">
+  <span class="left">10.30</span>
+  <span class="slash">/</span>
+  <span class="right">-</span>
+</td>
       </tr>
       <tr>
         <td><a href="https://ieeexplore.ieee.org/abstract/document/9052990" target="_blank" rel="noopener noreferrer">Clotho</a></td>
@@ -593,7 +667,11 @@ each audio event.</li>
         <td>❌</td>
         <td>❌</td>
         <td>✅</td>
-        <td class="cap">11.31 / -</td>
+        <td class="split-cell">
+  <span class="left">11.31</span>
+  <span class="slash">/</span>
+  <span class="right">-</span>
+</td>
       </tr>
       <tr>
         <td><a href="https://ieeexplore.ieee.org/abstract/document/9414579" target="_blank" rel="noopener noreferrer">AudioSetStrong</a></td>
@@ -601,7 +679,11 @@ each audio event.</li>
         <td>❌</td>
         <td>❌</td>
         <td>❌</td>
-        <td class="cap">- / 1.79</td>
+        <td class="split-cell">
+  <span class="left">-</span>
+  <span class="slash">/</span>
+  <span class="right">1.79</span>
+</td>
       </tr>
       <tr>
         <td><a href="https://ieeexplore.ieee.org/abstract/document/9414834" target="_blank" rel="noopener noreferrer">T2AGrounding</a></td>
@@ -609,7 +691,11 @@ each audio event.</li>
         <td>❌</td>
         <td>❌</td>
         <td>❌</td>
-        <td class="cap">9.60 / 3.41</td>
+        <td class="split-cell">
+  <span class="left">9.60</span>
+  <span class="slash">/</span>
+  <span class="right">3.41</span>
+</td>
       </tr>
       <tr>
         <td><a href="https://ojs.aaai.org/index.php/AAAI/article/view/29773" target="_blank" rel="noopener noreferrer">AudioCondition</a></td>
@@ -617,7 +703,11 @@ each audio event.</li>
         <td>❌</td>
         <td>❌</td>
         <td>❌</td>
-        <td class="cap">10.96 / 1.79</td>
+        <td class="split-cell">
+  <span class="left">10.96</span>
+  <span class="slash">/</span>
+  <span class="right">1.79</span>
+</td>
       </tr>
       <tr>
         <td><a href="https://ieeexplore.ieee.org/abstract/document/10889879" target="_blank" rel="noopener noreferrer">AudioTime</a></td>
@@ -625,7 +715,11 @@ each audio event.</li>
         <td>❌</td>
         <td>❌</td>
         <td>❌</td>
-        <td class="cap">- / 1.79</td>
+        <td class="split-cell">
+  <span class="left">-</span>
+  <span class="slash">/</span>
+  <span class="right">1.79</span>
+</td>
       </tr>
       <tr class="highlight-row">
         <td><strong>AudioAtlas</strong></td>
@@ -633,7 +727,11 @@ each audio event.</li>
         <td>✅</td>
         <td>✅</td>
         <td>✅</td>
-        <td class="cap"><strong>16.28 / 8.37</strong></td>
+        <td class="split-cell highlight-cell">
+  <span class="left"><strong>16.28</strong></span>
+  <span class="slash"><strong>/</strong></span>
+  <span class="right"><strong>8.37</strong></span>
+</td>
       </tr>
     </tbody>
   </table>
@@ -715,23 +813,21 @@ each audio event.</li>
   </table>
 </div>
        <div class="benchmark-table-title">Statistics of AudioAtlas</div>
-<p>SoundTrace, all annotations and audio download URLs are available in the <a href="https://github.com/AudioAtlas/AudioAtlas" target="_blank" rel="noopener noreferrer">repository</a>. The benchmark is available in the public domain under a
-  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">
-    Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
-  </a>.</p>
+
 </div>
 
 <div class="section">
   <h2 class="section-title">Construction Pipeline</h2>
 <hr class="section-divider">
+
   <figure class="centered-figure">
-      <img src="images/pipeline.png" alt="pipeline" style="display:block; margin:12px auto; width:100%; max-height:auto;
+      <img src="images/pipeline.png" alt="pipeline" style="display:block; margin:12px auto; width:120%; max-height:auto;align-items: center;
       margin: 20px auto;     /* 自动居中，同时上下保留间距 */
   border-radius: 8px;    /* 可选：圆角使页面更美观 */
   ">
-    <figcaption class="img-caption">AudioAltas Benchmark Construction Pipeline.</figcaption>
-    </figure>
 
+    </figure>
+<div class="benchmark-table-title">AudioAltas Benchmark Construction Pipeline.</div>
   <div class="subsection">
     <h3 class="subsection-title">Object-Centric Audio Category System - <span class="gradient-text">SoundTrace</span> </h3>
     <p class="subsection-text">
@@ -913,7 +1009,7 @@ each audio event.</li>
   <ul>
     <li>👏 Clapping</li>
 
-    <
+
           <li>💉 Blood Splattering</li>
           <li>🦴 Bone Cracking</li>
           <li>🗡️ Stab & Pierce</li>
@@ -1246,7 +1342,7 @@ each audio event.</li>
   <!-- Foldable Audio Block 1 -->
   <div class="section">
 
-    <h2 class="section-title">Annotation examples</h2>
+    <h2 class="section-title" id="Annotation Examples">Annotation Examples</h2>
 <hr class="section-divider">
     <div class="selector-bar">
 
@@ -1323,7 +1419,7 @@ each audio event.</li>
   <!-- 此处插入 audio-card-3 HTML -->
   <div class="audio-card-new">
   <div class="audio-card-header"> <strong>Theme:</strong> Sound Scene Sound &nbsp;&nbsp;<strong>Category:</strong> Amusement Park</div>
-  <div class="audio-card-summary"><strong>Overall caption:</strong> In the amusement park, after two clanging bell rings, the carousel starts with the roaring buzz of the spinning machinery, accompanied by children's joyful shouts and laughter, against a background of noisy chatter.</div>
+  <div class="audio-card-summary"><strong>Overall caption:</strong> In the amusement park, after two clanging bell rings, the carousel starts with the roaring buzz of the spinning machinery, accompanied by children's joyful shouts and laughter, against a background of chatter from a woman and children.</div>
   <div class="waveform-container">
     <div class="waveform" id="waveform-Artlist_106370"></div>
   </div>
@@ -1335,19 +1431,19 @@ each audio event.</li>
     <div class="event-item">
       <button onclick="playSegment('Artlist_106370', 0.0, 2.44)">0.00s - 2.44s </button>
       <button onclick="playSegment('Artlist_106370', 4.2, 6.30)">4.20s - 6.30s </button>
-      <span>Clanging bell ring.</span>
+      <span><u>Rapid, dense</u> mechanical ringing.</span>
     </div>
     <div class="event-item">
-      <button onclick="playSegment('Artlist_106370', 0.0, 9.99)">0.00s - 9.99s </button>
-      <span>Noisy human voices.</span>
+      <button onclick="playSegment('Artlist_106370', 0.0, 5.91)">0.00s - 5.91s </button>
+      <span>Chatter from a woman and children.</span>
     </div>
 
     <div class="event-item">
-      <button onclick="playSegment('Artlist_106370', 6.30, 20.04)">6.30s - 20.04s </button>
+      <button onclick="playSegment('Artlist_106370', 5.91, 20.04)">5.91s - 20.04s </button>
       <span>The carousel machine whirrs and rumbles <u>as it begins to rotates</u>.</span>
     </div>
     <div class="event-item">
-      <button onclick="playSegment('Artlist_106370', 9.99, 20.04)">9.99s - 20.04s </button>
+      <button onclick="playSegment('Artlist_106370', 7.31, 20.04)">7.31s - 20.04s </button>
       <span><u>Happy</u> shouts and laughter of children.</span>
     </div>
   </div>
@@ -1506,7 +1602,7 @@ each audio event.</li>
   <!-- 此处插入 audio-card-3 HTML -->
 <div class="audio-card-new">
   <div class="audio-card-header"> <strong>Theme:</strong> Sports &nbsp;&nbsp;<strong>Category:</strong> Weightlifting & Floor Exercise & Vault & Trampoline</div>
-  <div class="audio-card-summary"><strong>Overall caption:</strong> Before the vault, there's a slight, gradually approaching running sound from the athlete's sprint, then a loud thump as the vaulting athlete launches off the trampoline, and finally a faint landing sound from the athlete.</div>
+  <div class="audio-card-summary"><strong>Overall caption:</strong> Before the vault, there's a slight, gradually approaching running sound from the athlete's sprint, then a loud thump as the vaulting athlete launches off the trampoline, and finally a soft thump as the athlete lands on the mat.</div>
   <div class="waveform-container">
     <div class="waveform" id="waveform-audiostock_394161"></div>
   </div>
@@ -1516,16 +1612,16 @@ each audio event.</li>
   </div>
   <div class="event-buttons-new">
     <div class="event-item">
-      <button onclick="playSegment('audiostock_394161', 0.0, 2.42)">0.00s - 2.42s </button>
+      <button onclick="playSegment('audiostock_394161', 0.0, 2.34)">0.00s - 2.34s </button>
       <span>Before vaulting, the athlete's <u>light, gradually approaching</u> running footsteps.</span>
     </div>
     <div class="event-item">
-      <button onclick="playSegment('audiostock_394161', 2.42, 3.61)">2.42s - 3.61s </button>
+      <button onclick="playSegment('audiostock_394161', 2.34, 3.51)">2.34s - 3.51s </button>
       <span>A <u>loud</u> thump as the vaulting athlete launches off the trampoline.</span>
     </div>
     <div class="event-item">
-      <button onclick="playSegment('audiostock_394161', 3.61, 4.66)">3.61s - 4.66s </button>
-      <span>The <u>slight</u> sound of the athlete landing.</span>
+      <button onclick="playSegment('audiostock_394161', 3.51, 4.66)">3.51s - 4.66s </button>
+      <span>A <u>soft</u> thump as the athlete lands <u>on the mat</u>.</span>
     </div>
   </div>
 </div>
