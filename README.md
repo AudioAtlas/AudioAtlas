@@ -37,6 +37,6 @@ Further details are available on the project page: https://audioatlas.github.io/
 
 
 - **Annotations (`metas/`)**: Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).  
-- **Sample audios (`audios/`)**: Provided only for demonstration, sourced from Freeaudio under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).  
+- **Sample audios (`audios/`)**: Provided only for demonstration, sourced from Freeaudio(https://freesound.org/) under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).  
   These are **not part of the full AudioAtlas benchmark**.  
 - **Full audio dataset**: Not included here. Please download from https://artlist.io/sfx and https://www.audiostock.io/ under its original license terms.  
