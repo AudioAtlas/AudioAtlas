@@ -1,8 +1,36 @@
-# License for Annotations (metas/)
-All annotations and metadata files in the `metas/` directory are licensed under
-the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0).
-See https://creativecommons.org/licenses/by-nc-sa/4.0/ for details.
+# Annotations (metas/)
 
-# Audio Files
-The `audios/` directory contains only sample files for demonstration.
-Full audio files are NOT distributed in this repository. The complete audio files must be downloaded from https://artlist.io/sfx or https://www.audiostock.io, subject to their original license.  
+All annotations and metadata files in the metas/ directory are licensed under the
+Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license.
+
+You are free to:
+
+Share — copy and redistribute the material in any medium or format
+
+Adapt — remix, transform, and build upon the material
+
+Under the following terms:
+
+Attribution — You must give appropriate credit.
+
+NonCommercial — You may not use the material for commercial purposes.
+
+ShareAlike — If you remix, transform, or build upon the material, you must distribute your contributions under the same license.
+
+Full license text: https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+# Audio Files (audios/)
+
+The audios/ directory contains only sample audio files for demonstration purposes.
+
+These sample files are sourced from Freeaudio, released under the CC0 (Public Domain Dedication) license.
+
+These sample files are NOT part of the full AudioAtlas dataset.
+
+Full CC0 text: https://creativecommons.org/publicdomain/zero/1.0/
+
+# Full Audio Dataset
+
+The complete set of audio files corresponding to the annotations is NOT included in this repository.
+Users must download the audio from https://artlist.io/sfx and https://www.audiostock.io, and such use is subject to the original license terms of that website.
+This repository does not redistribute those audio files.
