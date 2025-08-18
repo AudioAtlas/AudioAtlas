@@ -36,11 +36,7 @@ Further details are available on the project page: https://audioatlas.github.io/
 ## 📄 License
 
 
-### License for Annotations (metas/)
-All annotations and metadata files in the `metas/` directory are licensed under
-the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0).
-See https://creativecommons.org/licenses/by-nc-sa/4.0/ for details.
-
-### Audio Files
-The `audios/` directory contains only sample files for demonstration.
-Full audio files are NOT distributed in this repository. The complete audio files must be downloaded from https://artlist.io/sfx or https://www.audiostock.io, subject to their original license. 
+- **Annotations (`metas/`)**: Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).  
+- **Sample audios (`audios/`)**: Provided only for demonstration, sourced from Freeaudio under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).  
+  These are **not part of the full AudioAtlas benchmark**.  
+- **Full audio dataset**: Not included here. Please download from https://artlist.io/sfx and https://www.audiostock.io/ under its original license terms.  
