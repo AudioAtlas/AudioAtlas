@@ -560,6 +560,33 @@ table.stats-table {
   display: block;
   border-radius: 8px;
 }
+
+.author-block{
+    padding:24px 16px;
+    text-align:center;
+    font-family: Georgia, "Times New Roman", serif; /* 衬线字体 */
+    font-style: italic;       /* 斜体 */
+    line-height:1.7;
+  }
+  .authors{
+    margin:0;
+    font-size: 18px;
+  }
+  .authors .name{
+    font-weight: 700;         /* 作者名加粗 */
+    white-space: nowrap;      /* 避免姓名被断开 */
+  }
+  .affiliations{
+    margin:8px 0 0;
+    font-size: 20px;
+  }
+  /* 上标数字样式（更小、更靠上） */
+  sup.aff{
+    font-size: 0.65em;
+    vertical-align: super;
+    font-style: normal;       /* 避免上标也斜体可读性差 */
+    margin-left: 2px;
+  }
 </style>
 </head>
 <body>
@@ -576,7 +603,22 @@ table.stats-table {
       margin-bottom: 8px;"
   ><span class="gradient-text">AudioAtlas</span><br> A Comprehensive and Balanced Benchmark Towards Movie-Oriented Text-to-Auido Generation</h1>
 
-<p class="sub-author">Anonymous </p>
+<div class="author-block">
+  <!-- 作者行 -->
+  <p class="authors">
+    <span class="name">Chenxi Wang<sup class="aff">1*</sup></span>,
+    <span class="name">Yusheng Dai<sup class="aff">1*</sup></span>,
+    <span class="name">Lei Sun<sup class="aff">2</sup></span>,
+    <span class="name">Jun Du<sup class="aff">1†</sup></span>,
+    <span class="name">Jianqing Gao<sup class="aff">2</sup></span>
+  </p>
+
+  <!-- 机构行（可多行） -->
+  <p class="affiliations">
+    <sup class="aff">1</sup>University of Science and Technology of China, China<br/>
+    <sup class="aff">2</sup>iFLYTEK Research, China
+  </p>
+</div>
 
 <p class="sub-author">
     <button onclick="location.href='#Annotation Examples'" style="
